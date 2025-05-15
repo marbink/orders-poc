@@ -1,0 +1,29 @@
+services:
+  app:
+    image: amazoncorretto:21
+    command: bash -c "java -jar $$(ls /app/*.jar | head -n 1)"
+    volumes:
+      - ./target:/app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+
+  database:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+#    volumes:
+#      - database-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  database-data:

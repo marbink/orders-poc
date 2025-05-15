@@ -1,0 +1,16 @@
+spring:
+  application.name: orders-poc
+
+  jpa:
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+
+app:
+  global-exception-handler:
+    hide-error-details: false

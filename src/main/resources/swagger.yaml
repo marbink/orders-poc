@@ -1,0 +1,151 @@
+openapi: 3.0.3
+info:
+  title: Order API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+paths:
+  /orders:
+    get:
+      summary: Get all orders
+      parameters:
+        - name: day
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: 'Filter orders by date (default: today)'
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrdersResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/ErrorResponse'
+
+    post:
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '201':
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/ErrorResponse'
+        '500':
+          $ref: '#/components/ErrorResponse'
+
+  /orders/{orderId}:
+    get:
+      summary: Get order by ID
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Order found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/ErrorResponse'
+        '500':
+          $ref: '#/components/ErrorResponse'
+
+    put:
+      summary: Update order by ID
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: Order updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/ErrorResponse'
+        '404':
+          $ref: '#/components/ErrorResponse'
+        '500':
+          $ref: '#/components/ErrorResponse'
+
+    delete:
+      summary: Delete order by ID
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Order deleted
+        '404':
+          $ref: '#/components/ErrorResponse'
+        '500':
+          $ref: '#/components/ErrorResponse'
+
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        orderUuid:
+          type: string
+          format: uuid
+          readOnly: true
+        customerUuid:
+          type: string
+          format: uuid
+        description:
+          type: string
+
+
+    GetOrdersResponse:
+      type: object
+      properties:
+        items:
+          description: List of orders
+          type: array
+          orders:
+            $ref: '#/components/schemas/Order'
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Something went wrong"
